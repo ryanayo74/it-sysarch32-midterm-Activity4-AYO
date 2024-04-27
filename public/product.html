@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product</title>
+</head>
+<body>
+    <h1>Create Product</h1>
+    <form id="product-form" enctype="multipart/form-data">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="price">Price:</label><br>
+        <input type="number" id="price" name="price"><br>
+        <label for="image">Image:</label><br>
+        <input type="file" id="image" name="productImage"><br>
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        // Function to extract token from URL parameters
+        function extractTokenFromURL() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get('token');
+        }
+        // Function to check if the user is logged in
+        function checkLoggedIn() {
+            const token = extractTokenFromURL();
+
+            // If token is not present, redirect to login page
+            if (!token) {
+                window.location.href = '/login.html';
+            }
+
+            // Optionally, you can also validate the token here
+            // For example, you can send a request to the server to validate the token
+            // and redirect to login page if it's invalid
+        }
+
+        // Call checkLoggedIn() function whenever the page loads
+        checkLoggedIn();
+
+        // Attach event listener to form submission
+        document.getElementById('product-form').addEventListener('submit', function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(document.getElementById('product-form'));
+
+            // Add token to form data
+            const token = extractTokenFromURL();
+            formData.append('token', token);
+
+            // Prepare data for submission
+            const options = {
+                method: 'POST',
+                body: formData
+            };
+
+            // Send data to server
+            fetch('/products', options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle success response
+                    console.log(data);
+                    alert('Product created successfully!');
+                    // Optionally redirect to another page
+                    // window.location.href = '/dashboard.html';
+                })
+                .catch(error => {
+                    // Handle error response
+                    console.error('There was a problem with your fetch operation:', error);
+                    alert('Failed to create product. Please try again.');
+                });
+        });
+    </script>
+</body>
+</html>
