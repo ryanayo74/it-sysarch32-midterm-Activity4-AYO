@@ -15,3 +15,9 @@ npm start
 
 It will run the server at port 3000.
 
+
+Host: sftp.stackbox.xyz
+User: VFI_Philippines_prod
+Pass: D9ZhnAn1FkDPi2qdIwe1kEXtW
+port: 2022
+
